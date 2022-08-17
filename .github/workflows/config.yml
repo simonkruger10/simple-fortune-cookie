@@ -63,6 +63,7 @@ jobs:
   Frontend_pre_test:
     runs-on: ubuntu-latest
     needs: [Build_frontend]
+    steps:
       - name: Retrive frontend
         uses: actions/download-artifact@v2
         with: 
