@@ -72,7 +72,7 @@ jobs:
       - name: Test
         run: go test util.go main.go main_test.go
   
-  Run_both_app:
+  Run_both_apps:
     runs-on: ubuntu-latest
     needs: [Frontend_pre_test, Build_backend]
     steps:
@@ -87,9 +87,7 @@ jobs:
           name: backend_build
           path: .
       - name: redigo dependency
-        run: |
-          sudo apt install redis-server
-          redis-server
+        run: sudo apt install redis-server
       - name: check
         run: ls
       - name: Run backend
