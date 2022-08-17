@@ -34,7 +34,7 @@ jobs:
       - name: Build backend
         run: go build .
 
-    Build_frontend:
+  Build_frontend:
     runs-on: ubuntu-latest
     needs: [Clone]
     steps:
