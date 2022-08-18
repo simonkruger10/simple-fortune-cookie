@@ -91,9 +91,16 @@ jobs:
       - name: redis status
         run: sudo systemctl status redis
       - name: Run backend
-        run: go run backend
+        run: go run backend &
       - name: Run frontend
-        run: go run frontend
+        run: go run frontend &
+      - name: Upload code
+        uses: actions/upload-artifact@v2
+        with:
+          name: code
+          path: .
+
+      
 
 
 
