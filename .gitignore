@@ -1,6 +1,9 @@
 # backend binary
 backend/backend
+backend/go.mod
+backend/go.sum
 
 # frontend binary
 frontend/frontend
+backend/go.mod
 
