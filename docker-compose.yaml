@@ -8,7 +8,7 @@ services:
     depends_on:
       - backend
     environment:
-      - BACKEND_DNS=inst23.z1.eficode.academy
+      - BACKEND_DNS=localhost
 
   backend:
     container_name: backend
