@@ -10,19 +10,11 @@ env:
   GIT_COMMIT: ${{ github.sha }}
 
 jobs:
-  Clone_code:
+  Clone:
     runs-on: ubuntu-latest
     steps:
       - name: clone-down
         uses: actions/checkout@v2
-      - name: Upload code
-        uses: actions/upload-artifact@v2
-        with: 
-          name: code
-          path: .
-  Clone:
-    runs-on: ubuntu-latest
-    steps:
       - name: clone-down
         uses: actions/checkout@v2
       - name: Upload backend
@@ -180,11 +172,8 @@ jobs:
     runs-on: jedie20
     needs: [Clone_code]
     steps:
-      - name: Retrive code
-        uses: actions/download-artifact@v2
-        with: 
-          name: code
-          path: .
+      - name: clone-down
+        uses: actions/checkout@v2
       - name: spin up
         run: docker-compose up -d
       - name: Test frontend respone
