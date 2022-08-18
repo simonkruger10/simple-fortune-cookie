@@ -10,8 +10,6 @@ env:
   GIT_COMMIT: ${{ github.sha }}
 
 jobs:
-
-jobs:
   Clone_code:
     runs-on: ubuntu-latest
     steps:
