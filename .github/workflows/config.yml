@@ -7,11 +7,7 @@ env:
 
 jobs:
   Clone:
-<<<<<<< HEAD
     runs-on: ubuntu-latest
-=======
-    runs-on: [sivin20]
->>>>>>> 79c4053 (runner test)
     steps:
       - name: clone-down
         uses: actions/checkout@v2
@@ -32,7 +28,7 @@ jobs:
           path: shell_tests
 
   Build_backend:
-    runs-on: ubuntu-latest
+    runs-on: jedie20
     needs: [Clone]
     steps:
       - name: Setup Go
@@ -53,7 +49,7 @@ jobs:
           path: .
 
   Build_frontend:
-    runs-on: ubuntu-latest
+    runs-on: jedie20
     needs: [Clone]
     steps:
       - name: Setup Go
@@ -74,7 +70,7 @@ jobs:
           path: .
 
   Frontend_pre_test:
-    runs-on: ubuntu-latest
+    runs-on: jedie20
     needs: [Build_frontend]
     steps:
       - name: Retrive frontend_build
