@@ -17,6 +17,11 @@ jobs:
         with: 
           name: frontend
           path: frontend
+      - name: Upload sh_tests
+        uses: actions/upload-artifact@v2
+        with: 
+          name: shell_tests
+          path: shell_tests
 
   Build_backend:
     runs-on: ubuntu-latest
@@ -76,6 +81,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Frontend_pre_test, Build_backend]
     steps:
+      - name: Retrive tests
+        uses: actions/download-artifact@v2
+        with: 
+          name: shell_tests
+          path: .
       - name: Retrive frontend_build
         uses: actions/download-artifact@v2
         with: 
