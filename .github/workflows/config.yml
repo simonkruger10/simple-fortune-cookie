@@ -26,6 +26,8 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.16.4
+      - name: redigo dependency
+        run: sudo apt install redis-server
       - name: retrive backend
         uses: actions/download-artifact@v2
         with: 
@@ -86,8 +88,6 @@ jobs:
         with: 
           name: backend_build
           path: .
-      - name: redigo dependency
-        run: sudo apt install redis-server
       - name: check
         run: ls
       - name: Run backend
