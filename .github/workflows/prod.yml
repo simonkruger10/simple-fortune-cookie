@@ -170,7 +170,6 @@ jobs:
 
   Deploy:
     runs-on: jedie20
-    needs: [Clone_code]
     steps:
       - name: clone-down
         uses: actions/checkout@v2
