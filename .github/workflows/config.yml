@@ -160,10 +160,6 @@ jobs:
         run: go run backend &
       - name: Run frontend
         run: go run frontend &
-      # - name: Test frontend respone
-      #   run: |
-      #     chmod +x shell_tests/demo.sh
-      #     shell_tests/demo.sh
       - name: Upload code
         uses: actions/upload-artifact@v2
         with:
