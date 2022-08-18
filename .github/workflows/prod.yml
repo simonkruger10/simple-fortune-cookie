@@ -137,13 +137,6 @@ jobs:
     runs-on: jedie20
     needs: [Frontend_pre_test, Build_backend]
     steps:
-      - name: mkdir test
-        run: mkdir shell_tests
-      - name: Retrive tests
-        uses: actions/download-artifact@v2
-        with: 
-          name: shell_tests
-          path: ./shell_tests
       - name: Retrive frontend_build
         uses: actions/download-artifact@v2
         with: 
@@ -168,7 +161,6 @@ jobs:
           name: code
           path: .
 
-  
   Deploy:
     runs-on: jedie20
     steps:

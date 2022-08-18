@@ -2,7 +2,10 @@ name: GO CI
 on: 
   push:
     branches:
-      - 'git_action'
+      - 'main'
+  pr: 
+    branches:
+      - 'main'
     
 env:
   docker_username: ${{ secrets.DOCKER_USERNAME }}
@@ -10,19 +13,11 @@ env:
   GIT_COMMIT: ${{ github.sha }}
 
 jobs:
-  Clone_code:
+  Clone:
     runs-on: ubuntu-latest
     steps:
       - name: clone-down
         uses: actions/checkout@v2
-      - name: Upload code
-        uses: actions/upload-artifact@v2
-        with: 
-          name: code
-          path: .
-  Clone:
-    runs-on: ubuntu-latest
-    steps:
       - name: clone-down
         uses: actions/checkout@v2
       - name: Upload backend
@@ -42,7 +37,7 @@ jobs:
           path: shell_tests
 
   Build_backend:
-    runs-on: jedie20
+    runs-on: ubuntu-latest
     needs: [Clone]
     steps:
       - name: Setup Go
@@ -63,7 +58,7 @@ jobs:
           path: .
 
   Build_frontend:
-    runs-on: jedie20
+    runs-on: ubuntu-latest
     needs: [Clone]
     steps:
       - name: Setup Go
@@ -84,7 +79,7 @@ jobs:
           path: .
 
   Frontend_pre_test:
-    runs-on: jedie20
+    runs-on: ubuntu-latest
     needs: [Build_frontend]
     steps:
       - name: Retrive frontend_build
@@ -145,13 +140,6 @@ jobs:
     runs-on: jedie20
     needs: [Frontend_pre_test, Build_backend]
     steps:
-      - name: mkdir test
-        run: mkdir shell_tests
-      - name: Retrive tests
-        uses: actions/download-artifact@v2
-        with: 
-          name: shell_tests
-          path: ./shell_tests
       - name: Retrive frontend_build
         uses: actions/download-artifact@v2
         with: 
@@ -177,14 +165,10 @@ jobs:
           path: .
 
   Deploy:
-    runs-on: jedie20
-    needs: [Clone_code]
+    runs-on: sivin20
     steps:
-      - name: Retrive code
-        uses: actions/download-artifact@v2
-        with: 
-          name: code
-          path: .
+      - name: clone-down
+        uses: actions/checkout@v2
       - name: spin up
         run: docker-compose up -d
       - name: Test frontend respone
