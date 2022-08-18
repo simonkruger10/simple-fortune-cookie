@@ -6,7 +6,7 @@ on:
       - 'git_action'
 jobs:
   Clone:
-    runs-on: jedie20
+    runs-on: sivin20
     steps:
       - name: clone-down
         uses: actions/checkout@v2
