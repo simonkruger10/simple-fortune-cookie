@@ -1,0 +1,163 @@
+name: GO CD
+on: 
+  create: 
+    branches:
+      - 'main'
+    tags:
+      - '**'
+jobs:
+  Test-Code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.16'
+
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Run unit test
+        run: |
+          cd ${GITHUB_WORKSPACE}/frontend
+          go test util.go main.go main_test.go
+
+      - name: Build backend
+        run: |
+          cd ${GITHUB_WORKSPACE}/backend
+          go build .
+
+      - name: Build frontend
+        run: |
+          cd ${GITHUB_WORKSPACE}/frontend
+          go build .
+
+      - name: Run backend
+        run: |
+          cd ${GITHUB_WORKSPACE}/backend
+          go run backend &
+
+      - name: Run frontend
+        run: |
+          cd ${GITHUB_WORKSPACE}/frontend
+          go run frontend &
+
+      - name: Upload code
+        uses: actions/upload-artifact@v2
+        with:
+          name: code
+          path: .
+
+  Docker-Image:
+    runs-on: ubuntu-latest
+    needs: Test-Code
+    steps:
+
+      - name: Download code
+        uses: actions/download-artifact@v2
+        with:
+          name: code
+          path: . 
+
+      - name: Get & Run Backend Image
+        run: docker run jedie20/go_backend:latest
+        env:
+          docker_id: ${{secrets.DOCKER_USERNAME}}
+          docker_image: go_backend:latest
+          docker_port: 9000
+
+      - name: Get & Run Frontend Image
+        run: docker run jedie20/go_backend:latest
+        env:
+          docker_id: ${{secrets.DOCKER_USERNAME}}
+          docker_image: go_frontend:latest
+          docker_port: 8080
+
+      - name: Push Backend Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          #Ændres til secrets.DOCKER_USERNAME?
+          tags: ${{env.docker_username}}/backend:latest
+
+      - name: Push Frontend Image
+       uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          #Ændres til secrets.DOCKER_USERNAME?
+          tags: ${{env.docker_username}}/frontend:latest
+
+  Test-Kubernetes:
+    runs-on: self-hosted
+    needs: Docker-Image
+    steps:
+        #Dont know if needed?
+      - name: Set Vars
+        id: vars
+        run: |
+          echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
+          echo "::set-output name=revision::${GITHUB_SHA}"
+
+      - name: Download code
+        uses: actions/download-artifact@v2
+        with:
+          name: code
+          path: . 
+
+      - name: Remove existing services and deployments
+        run: |
+          kubectl apply -f service-frontend.yml
+          kubectl apply -f service-backend.yml
+          kubectl apply -f deployment-frontend.yml
+          kubectl apply -f deployment-backend.yml
+        env:
+          docker_image: go_backend
+          docker_image2: go_frontend
+        # --- This is the part I got to
+      - name: Running Backend
+        run: |
+          chmod +x ${GITHUB_WORKSPACE}/ci_cd/run_kubernetes.sh
+          ${GITHUB_WORKSPACE}/ci_cd/run_kubernetes.sh
+        env:
+          docker_id: ${{secrets.DOCKER_HUB_ID}}
+          docker_image: simple-fortune-cookie-backend
+          docker_tag: ${{ steps.vars.outputs.version }}
+          docker_run_id: ${{ github.run_id }}-${{ github.run_number }}
+          docker_port: 9000
+
+      - name: Running Frontend
+        run: |
+          chmod +x ${GITHUB_WORKSPACE}/ci_cd/run_kubernetes.sh
+          ${GITHUB_WORKSPACE}/ci_cd/run_kubernetes.sh
+        env:
+          docker_id: ${{secrets.DOCKER_HUB_ID}}
+          docker_image: simple-fortune-cookie-frontend
+          docker_tag: ${{ steps.vars.outputs.version }}
+          docker_run_id: ${{ github.run_id }}-${{ github.run_number }}
+          docker_port: 8080
+
+      - name: Remove Backend Test
+        run: |
+          chmod +x ${GITHUB_WORKSPACE}/ci_cd/remove_kubernetes.sh
+          ${GITHUB_WORKSPACE}/ci_cd/remove_kubernetes.sh
+        env:
+          docker_image: simple-fortune-cookie-backend
+          docker_run_id: ${{ github.run_id }}-${{ github.run_number }}
+
+      - name: Remove Frontend Test
+        run: |
+          chmod +x ${GITHUB_WORKSPACE}/ci_cd/remove_kubernetes.sh
+          ${GITHUB_WORKSPACE}/ci_cd/remove_kubernetes.sh
+        env:
+          docker_image: simple-fortune-cookie-frontend
+          docker_run_id: ${{ github.run_id }}-${{ github.run_number }}
+
+      - name: Deploy
+        run: |
+          chmod +x ${GITHUB_WORKSPACE}/ci_cd/deploy.sh
+          ${GITHUB_WORKSPACE}/ci_cd/deploy.sh
+        env:
+          docker_tag: ${{ steps.vars.outputs.version }}
+  
