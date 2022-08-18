@@ -108,7 +108,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: go/backend:latest
+          tags: go_backend:latest
 
   Docker-image-frontend:
     runs-on: ubuntu-latest
@@ -137,7 +137,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: go/frontend:latest
+          tags: go_frontend:latest
 
   Run_both_apps:
     runs-on: jedie20
