@@ -79,7 +79,8 @@ jobs:
   
   Run_both_apps:
     runs-on: ubuntu-latest
-    needs: [Frontend_pre_test, Build_backend]
+    #needs: [Frontend_pre_test, Build_backend]
+    needs: [Build_backend]
     steps:
       - name: mkdir test
         run: mkdir shell_tests
@@ -108,8 +109,8 @@ jobs:
         run: go run frontend &
       - name: Test frontend respone
         run: |
-          chmod +x ${GITHUB_WORKSPACE}/shell_tests/demo.sh
-          {GITHUB_WORKSPACE}/shell_tests/demo.sh
+          shell_tests/demo.sh
+          shell_tests/demo.sh
       - name: Upload code
         uses: actions/upload-artifact@v2
         with:
