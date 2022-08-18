@@ -79,8 +79,7 @@ jobs:
   
   Run_both_apps:
     runs-on: ubuntu-latest
-    #needs: [Frontend_pre_test, Build_backend]
-    needs: [Build_backend]
+    needs: [Frontend_pre_test, Build_backend]
     steps:
       - name: mkdir test
         run: mkdir shell_tests
@@ -118,8 +117,3 @@ jobs:
           path: .
 
       
-
-
-
-
-  
