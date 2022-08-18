@@ -1,0 +1,19 @@
+version: '3.1'
+services:
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+    environment:
+      - BACKEND_DNS=inst23.z1.eficode.academy
+
+  backend:
+    container_name: backend
+    build: ./backend
+    ports:
+      - "9000:9000"
+    
+
