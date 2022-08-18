@@ -3,7 +3,7 @@ on: push
 jobs:
 
   Clone:
-    runs-on: [self-hosted]
+    runs-on: [sivin20]
     steps:
       - name: clone-down
         uses: actions/checkout@v2
@@ -78,7 +78,7 @@ jobs:
         run: go test
   
   Run_both_apps:
-    runs-on: ubuntu-latest
+    runs-on: [sivin20]
     needs: [Frontend_pre_test, Build_backend]
     steps:
       - name: mkdir test
