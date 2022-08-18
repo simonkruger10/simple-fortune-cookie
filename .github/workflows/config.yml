@@ -70,7 +70,7 @@ jobs:
           name: frontend_build
           path: .
       - name: Test
-        run: go test util.go main.go main_test.go
+        run: go test
   
   Run_both_apps:
     runs-on: ubuntu-latest
@@ -94,6 +94,10 @@ jobs:
         run: go run backend &
       - name: Run frontend
         run: go run frontend &
+      - name: Test frontend respone
+        run: |
+          chmod +x ${GITHUB_WORKSPACE}/shell_tests/demo.sh
+          {GITHUB_WORKSPACE}/shell_tests/demo.sh
       - name: Upload code
         uses: actions/upload-artifact@v2
         with:
