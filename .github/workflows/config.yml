@@ -1,6 +1,8 @@
 name: GO CI
 on: 
   push:
+    branches:
+      - 'main'
     
 env:
   docker_username: ${{ secrets.DOCKER_USERNAME }}
