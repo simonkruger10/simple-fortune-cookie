@@ -2,7 +2,7 @@ name: GO CI
 on: 
   push:
     branches:
-      - 'main'
+      - 'git_action'
     
 env:
   docker_username: ${{ secrets.DOCKER_USERNAME }}
@@ -10,6 +10,18 @@ env:
   GIT_COMMIT: ${{ github.sha }}
 
 jobs:
+
+jobs:
+  Clone_code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone-down
+        uses: actions/checkout@v2
+      - name: Upload code
+        uses: actions/upload-artifact@v2
+        with: 
+          name: code
+          path: .
   Clone:
     runs-on: ubuntu-latest
     steps:
@@ -166,4 +178,20 @@ jobs:
           name: code
           path: .
 
-    
+  Deploy:
+    runs-on: jedie20
+    needs: [Clone_code]
+    steps:
+      - name: Retrive code
+        uses: actions/download-artifact@v2
+        with: 
+          name: code
+          path: .
+      - name: spin up
+        run: docker-compose up -d
+      - name: Test frontend respone
+        run: |
+          chmod +x shell_tests/demo.sh
+          shell_tests/demo.sh
+      - name: docker compose down
+        run: docker-compose down
