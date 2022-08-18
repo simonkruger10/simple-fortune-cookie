@@ -1,7 +1,7 @@
-FROM golang:1.16
-COPY ./frontend ./
-COPY ./static ./static/
-COPY ./templates ./templates/
-RUN chmod +x /go/frontend
-EXPOSE 8080/tcp
-ENTRYPOINT ["/go/frontend"]
+FROM golang:1.17.0
+COPY . /frontend
+WORKDIR /frontend
+RUN go build
+EXPOSE 8080
+CMD ["go", "run", "frontend"]
+
