@@ -3,7 +3,7 @@ on: push
 jobs:
 
   Clone:
-    runs-on: [sivin20]
+    runs-on: jedie20
     steps:
       - name: clone-down
         uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
           path: shell_tests
 
   Build_backend:
-    runs-on: ubuntu-latest
+    runs-on: jedie20
     needs: [Clone]
     steps:
       - name: Setup Go
@@ -45,7 +45,7 @@ jobs:
           path: .
 
   Build_frontend:
-    runs-on: ubuntu-latest
+    runs-on: jedie20
     needs: [Clone]
     steps:
       - name: Setup Go
@@ -66,7 +66,7 @@ jobs:
           path: .
     
   Frontend_pre_test:
-    runs-on: ubuntu-latest
+    runs-on: jedie20
     needs: [Build_frontend]
     steps:
       - name: Retrive frontend_build
@@ -78,7 +78,7 @@ jobs:
         run: go test
   
   Run_both_apps:
-    runs-on: [sivin20]
+    runs-on: jedie20
     needs: [Frontend_pre_test, Build_backend]
     steps:
       - name: mkdir test
