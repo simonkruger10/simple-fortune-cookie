@@ -81,11 +81,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Frontend_pre_test, Build_backend]
     steps:
+      - name: mkdir test
+        run: mkdir shell_tests
       - name: Retrive tests
         uses: actions/download-artifact@v2
         with: 
           name: shell_tests
-          path: .
+          path: ./shell_tests
       - name: Retrive frontend_build
         uses: actions/download-artifact@v2
         with: 
