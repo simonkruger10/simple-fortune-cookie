@@ -1,6 +1,6 @@
-url='inst9.z2.eficode.academy:8080'
+url='localhost:8080'
 status=$(curl -s -o /dev/null -w "%{http_code}" ${url})
-echo status
+echo $status
 if [ $status == 200 ]
 then
   echo 'Response ok'
