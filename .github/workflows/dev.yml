@@ -167,7 +167,14 @@ jobs:
       - name: clone-down
         uses: actions/checkout@v2
       - name: spin up
-        run: docker-compose up -d &&
+        run: docker-compose up -d
+
+  Docker_compose_Test:
+    runs-on: jedie20
+    needs: Docker_compose_up
+    steps:
+      - name: clone-down
+        uses: actions/checkout@v2
       - name: Test frontend respone
         run: |
           chmod +x shell_tests/demo.sh
