@@ -1,0 +1,183 @@
+name: GO CI
+on: 
+  pull_request:
+    branches:
+      - 'main'
+
+env:
+  docker_username: ${{ secrets.DOCKER_USERNAME }}
+  docker_password: ${{ secrets.DOCKER_PASSWORD }}
+  GIT_COMMIT: ${{ github.sha }}
+
+jobs:
+  Clone:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone-down
+        uses: actions/checkout@v2
+      - name: clone-down
+        uses: actions/checkout@v2
+      - name: Upload backend
+        uses: actions/upload-artifact@v2
+        with: 
+          name: backend
+          path: backend
+      - name: Upload frontend
+        uses: actions/upload-artifact@v2
+        with: 
+          name: frontend
+          path: frontend
+      - name: Upload sh_tests
+        uses: actions/upload-artifact@v2
+        with: 
+          name: shell_tests
+          path: shell_tests
+
+  Build_backend:
+    runs-on: ubuntu-latest
+    needs: [Clone]
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16.4
+      - name: retrive backend
+        uses: actions/download-artifact@v2
+        with: 
+          name: backend
+          path: .
+      - name: Build backend
+        run: go build .
+      - name: Upload backend_build
+        uses: actions/upload-artifact@v2
+        with: 
+          name: backend_build
+          path: .
+
+  Build_frontend:
+    runs-on: ubuntu-latest
+    needs: [Clone]
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16.4
+      - name: retrive frontend
+        uses: actions/download-artifact@v2
+        with: 
+          name: frontend
+          path: .
+      - name: Build frontend
+        run: go build .
+      - name: Upload frontend_build
+        uses: actions/upload-artifact@v2
+        with: 
+          name: frontend_build
+          path: .
+
+  Frontend_pre_test:
+    runs-on: ubuntu-latest
+    needs: [Build_frontend]
+    steps:
+      - name: Retrive frontend_build
+        uses: actions/download-artifact@v2
+        with: 
+          name: frontend_build
+          path: .
+      - name: Test
+        run: go test
+  
+  Docker-image-backend:
+    runs-on: ubuntu-latest
+    needs: [Frontend_pre_test]
+    steps:
+      - name: Download Backend
+        uses: actions/download-artifact@v2
+        with:
+          name: backend
+          path: .
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.docker_username }}
+          password: ${{ env.docker_password }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{env.docker_username}}/go_backend:latest
+
+  Docker-image-frontend:
+    runs-on: ubuntu-latest
+    needs: [Frontend_pre_test]
+    steps:
+      - name: Download Repo
+        uses: actions/download-artifact@v2
+        with:
+          name: frontend
+          path: .
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.docker_username }}
+          password: ${{ env.docker_password }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{env.docker_username}}/go_frontend:latest
+
+  Test_run_both_apps:
+    runs-on: ubuntu-latest
+    needs: [Frontend_pre_test, Build_backend]
+    steps:
+      - name: Retrive frontend_build
+        uses: actions/download-artifact@v2
+        with: 
+          name: frontend_build
+          path: .
+      - name: Retrive backend_build
+        uses: actions/download-artifact@v2
+        with: 
+          name: backend_build
+          path: .
+      - name: redigo dependency
+        run: sudo apt install redis-server
+      - name: redis status
+        run: sudo systemctl status redis
+      - name: Run backend
+        run: go run backend &
+      - name: Run frontend
+        run: go run frontend &
+      - name: Upload code
+        uses: actions/upload-artifact@v2
+        with:
+          name: code
+          path: .
+
+  Docker_compose_up:
+    runs-on: sivin20
+    steps:
+      - name: clone-down
+        uses: actions/checkout@v2
+      - name: spin up
+        run: docker-compose up -d
+
+  Docker_compose_Test:
+    runs-on: sivin20
+    needs: Docker_compose_up
+    steps:
+      - name: clone-down
+        uses: actions/checkout@v2
+      - name: Test frontend respone
+        run: |
+          chmod +x shell_tests/demo.sh
+          shell_tests/demo.sh
+      - name: docker compose down
+        run: docker-compose down
