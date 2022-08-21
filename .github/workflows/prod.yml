@@ -161,7 +161,7 @@ jobs:
           name: code
           path: .
 
-  Deploy:
+  Docker_compose:
     runs-on: jedie20
     steps:
       - name: clone-down
