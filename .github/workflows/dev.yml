@@ -164,12 +164,10 @@ jobs:
   Docker_compose:
     runs-on: sivin20
     steps:
-      - name: docker compose down
-        run: docker-compose down
       - name: clone-down
         uses: actions/checkout@v2
-      - name: spin up
-        run: docker-compose up -d
+      # - name: spin up
+      #   run: docker-compose up -d
       - name: Test frontend respone
         run: |
           chmod +x shell_tests/demo.sh
