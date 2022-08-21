@@ -46,7 +46,6 @@ jobs:
   
   Test-Kubernetes:
     runs-on: self-hosted
-    needs: Docker-Image
     steps:
       - name: Set Vars
         id: vars
