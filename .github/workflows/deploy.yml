@@ -2,51 +2,8 @@ name: GO CD
 on: push
 
 jobs:
-  Test-Code:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '1.16'
-
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-
-      - name: Run unit test
-        run: |
-          cd ${GITHUB_WORKSPACE}/frontend
-          go test util.go main.go main_test.go
-
-      - name: Build backend
-        run: |
-          cd ${GITHUB_WORKSPACE}/backend
-          go build .
-
-      - name: Build frontend
-        run: |
-          cd ${GITHUB_WORKSPACE}/frontend
-          go build .
-
-      - name: Run backend
-        run: |
-          cd ${GITHUB_WORKSPACE}/backend
-          go run backend &
-
-      - name: Run frontend
-        run: |
-          cd ${GITHUB_WORKSPACE}/frontend
-          go run frontend &
-
-      - name: Upload code
-        uses: actions/upload-artifact@v2
-        with:
-          name: code
-          path: .
-
   Test-Kubernetes:
     runs-on: self-hosted
-    needs: Test-Code
     steps:
       - name: Set Vars
         id: vars
@@ -54,11 +11,8 @@ jobs:
           echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
           echo "::set-output name=revision::${GITHUB_SHA}"
 
-      - name: Download code
-        uses: actions/download-artifact@v2
-        with:
-          name: code
-          path: . 
+      - name: Checkout Repo
+        uses: actions/checkout@v2
 
       - name: removing existing services and deployments
         run: |
