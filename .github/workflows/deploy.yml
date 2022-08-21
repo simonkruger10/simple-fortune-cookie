@@ -52,7 +52,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: Test-Code
     steps:
-
       - name: Download code
         uses: actions/download-artifact@v2
         with:
@@ -103,7 +102,7 @@ jobs:
           name: code
           path: . 
 
-      - name: Preparing...
+      - name: removing existing services and deployments
         run: |
           chmod +x ${GITHUB_WORKSPACE}/scripts/remove_kubernetes.sh
           ${GITHUB_WORKSPACE}/scripts/remove_kubernetes.sh
