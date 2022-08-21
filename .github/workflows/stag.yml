@@ -162,7 +162,7 @@ jobs:
           path: .
 
   Deploy:
-    runs-on: sivin20
+    runs-on: jedie20
     steps:
       - name: clone-down
         uses: actions/checkout@v2
