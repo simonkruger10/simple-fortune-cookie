@@ -134,7 +134,7 @@ jobs:
           tags: ${{env.docker_username}}/go_frontend:latest
 
   Test_run_both_apps:
-    runs-on: jedie20
+    runs-on: ubuntu-latest
     needs: [Frontend_pre_test, Build_backend]
     steps:
       - name: Retrive frontend_build
