@@ -86,7 +86,7 @@ jobs:
           push: true
           tags: ${{env.docker_username}}/go_frontend:latest
   
-   Test-Kubernetes:
+  Test-Kubernetes:
     runs-on: self-hosted
     needs: Docker-Image
     steps:
