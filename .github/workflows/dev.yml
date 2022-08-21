@@ -164,6 +164,8 @@ jobs:
   Docker_compose:
     runs-on: jedie20
     steps:
+      - name: docker compose down
+        run: docker-compose down
       - name: clone-down
         uses: actions/checkout@v2
       - name: spin up
