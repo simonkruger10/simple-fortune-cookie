@@ -1,4 +1,5 @@
 name: GO CD
+on: push
 
 jobs:
   Test-Code:
