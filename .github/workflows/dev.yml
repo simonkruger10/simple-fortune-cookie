@@ -162,7 +162,7 @@ jobs:
           path: .
 
   Docker_compose:
-    runs-on: ubuntu-latest
+    runs-on: jedie20
     steps:
       - name: clone-down
         uses: actions/checkout@v2
