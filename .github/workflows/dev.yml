@@ -162,7 +162,7 @@ jobs:
           path: .
 
   Docker_compose:
-    runs-on: jedie20
+    runs-on: sivin20
     steps:
       - name: docker compose down
         run: docker-compose down
