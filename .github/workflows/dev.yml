@@ -181,3 +181,5 @@ jobs:
           shell_tests/demo.sh
       - name: docker compose down
         run: docker-compose down
+
+        
