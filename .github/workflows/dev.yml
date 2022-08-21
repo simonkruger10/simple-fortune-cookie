@@ -161,13 +161,13 @@ jobs:
           name: code
           path: .
 
-  Docker_compose:
-    runs-on: sivin20
+  Docker_compose_up:
+    runs-on: jedie20
     steps:
       - name: clone-down
         uses: actions/checkout@v2
-      # - name: spin up
-      #   run: docker-compose up -d
+      - name: spin up
+        run: docker-compose up -d &&
       - name: Test frontend respone
         run: |
           chmod +x shell_tests/demo.sh
