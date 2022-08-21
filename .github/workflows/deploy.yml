@@ -1,10 +1,5 @@
 name: GO CD
-on: 
-  create: 
-    branches:
-      - 'main'
-    tags:
-      - '**'
+
 jobs:
   Test-Code:
     runs-on: ubuntu-latest
