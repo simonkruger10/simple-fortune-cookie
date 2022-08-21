@@ -43,9 +43,10 @@ jobs:
         with:
           name: code
           path: .
-  
+
   Test-Kubernetes:
     runs-on: self-hosted
+    needs: Test-Code
     steps:
       - name: Set Vars
         id: vars
